@@ -34,18 +34,25 @@ def ask_llama():
     index = GPTVectorStoreIndex.from_documents(documents)
 
     query_engine = index.as_query_engine()
-    questions = ["Summarize the text",
-             "Highlight key legal points",
-             "Translate for the average user to read it",
+    questions = [["About the contract", "Summarize this vendor contract"],
+             ["Negotiate better terms", "5 Bullet points for better terms"],
+             ["Highlight any red flags", "5 Bullet points for red flags"],
              ]
 
     for question in questions:
-        print(question)
-        response = query_engine.query(question)
+        print(question, "Debug!")
+        st.write('# {}'.format(question[0]))
+        response = query_engine.query(question[1])
+        st.write(response)
+
+    answer = st.text_area(label='Any Questions?', placeholder='Ask any questions you may have about the contract', key='qa_prompt')
+    if answer:
+        response = query_engine.query(answer)
         st.write(response)
 
 def main():
-    st.title("PDF to Text Converter")
+    st.set_page_config(page_title="Afterwork: Vendor Negotiation Tool", page_icon=":robot:")
+    st.header("Afterwork: Vendor Negotiation Tool")
 
     # File Upload
     uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
